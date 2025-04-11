@@ -5,9 +5,22 @@ import ProgressIndicator from './ProgressIndicator';
 import Step2PersonalInfo from './Step2PersonalInfo';
 import Step3Interests from './Step3Interests';
 import Step4Bio from './Step4Bio';
+import LocationPicker  from './LocationPicker';
+
+type Location = {
+  latitude: number
+  longitude: number
+}
 
 const SignupContainer = () => {
-  const signupContext = useContext(SignupContext);
+  const signupContext = useContext(SignupContext)!;
+
+  const {updateFormData} = signupContext
+
+  const handleLocation = (location: Location) => {
+    updateFormData('location', location);
+    // nextStep();
+  };
 
   if (!signupContext) {
     throw new Error("SignupContainer should be used within a SignupProvider");
@@ -26,7 +39,9 @@ const SignupContainer = () => {
         {step === 1 && <Step1Gender />}
         {step === 2 && <Step2PersonalInfo />}
         {step === 3 && <Step3Interests />}
-        {step === 4 && <Step4Bio/>} 
+        {step === 4 && <LocationPicker onLocationChange={handleLocation}/>}
+        {step === 5 && <Step4Bio/>}
+       
       </div>
     </div>
   );

@@ -32,7 +32,7 @@ const BioStep = () => {
     e.preventDefault();
     
     if (!validate()) return;
-    
+    console.log(formData)
     try {
       setIsSubmitting(true);
       setSubmitError(null);
