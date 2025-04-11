@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useState } from "react";
 
 // Location type
-type Location = {
+export type Location = {
   longitude: number;
   latitude: number;
 };
