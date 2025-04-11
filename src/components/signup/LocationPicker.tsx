@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useContext } from 'react';
+import { useEffect, useCallback, useContext, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { FaLocationArrow, FaMapMarkerAlt } from 'react-icons/fa';
 import { SignupContext } from '@/contexts/SignupContext';
@@ -11,7 +11,7 @@ type Location = {
 };
 
 type LocationPickerProps = {
-  onLocationChange: (location: Location) => void;
+  onLocationChange?: (location: Location) => void;
   initialLocation?: Location;
 };
 
@@ -28,23 +28,17 @@ const SimpleMap = dynamic(
 );
 
 export default function LocationPicker({ onLocationChange, initialLocation }: LocationPickerProps) {
-  const signupContext = useContext(SignupContext)!
+  const { nextStep, formData, updateFormData } = useContext(SignupContext)!;
 
-  const { nextStep } = signupContext
-  const [position, setPosition] = useState<[number, number]>(
-    initialLocation
-      ? [initialLocation.latitude, initialLocation.longitude]
-      : [51.505, -0.09] // Default to London
-  );
   const [isLocating, setIsLocating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Initialize or update position
+  // Initialize location from context or props
   useEffect(() => {
-    if (initialLocation) {
-      setPosition([initialLocation.latitude, initialLocation.longitude]);
+    if (initialLocation && !formData.location) {
+      updateFormData('location', initialLocation);
     }
-  }, [initialLocation]);
+  }, [initialLocation, formData.location, updateFormData]);
 
   // Auto-detect user's location
   const detectUserLocation = useCallback(() => {
@@ -59,12 +53,12 @@ export default function LocationPicker({ onLocationChange, initialLocation }: Lo
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        const newPos: [number, number] = [
-          pos.coords.latitude,
-          pos.coords.longitude
-        ];
-        setPosition(newPos);
-        onLocationChange({ latitude: newPos[0], longitude: newPos[1] });
+        const newPos: Location = {
+          latitude: pos.coords.latitude,
+          longitude: pos.coords.longitude
+        };
+        updateFormData('location', newPos);
+        onLocationChange?.(newPos);
         setIsLocating(false);
       },
       (err) => {
@@ -77,28 +71,31 @@ export default function LocationPicker({ onLocationChange, initialLocation }: Lo
         maximumAge: 0
       }
     );
-  }, [onLocationChange]);
+  }, [onLocationChange, updateFormData]);
 
-  // Manual position update
-  const handlePositionChange = useCallback((lat: number, lng: number) => {
+  // Manual location update
+  const handleLocationChange = useCallback((lat: number, lng: number) => {
     const validatedLat = Math.max(-90, Math.min(90, lat));
     const validatedLng = Math.max(-180, Math.min(180, lng));
-    const newPosition: [number, number] = [validatedLat, validatedLng];
-    setPosition(newPosition);
-    onLocationChange({ latitude: validatedLat, longitude: validatedLng });
+    const newLocation: Location = {
+      latitude: validatedLat,
+      longitude: validatedLng
+    };
+    updateFormData('location', newLocation);
+    onLocationChange?.(newLocation);
     setError(null);
-  }, [onLocationChange]);
+  }, [onLocationChange, updateFormData]);
 
   return (
     <div className="space-y-4">
-     
       <button
         onClick={detectUserLocation}
         disabled={isLocating}
-        className={`flex items-center gap-2 px-4 py-2 rounded-md ${isLocating
+        className={`flex items-center gap-2 px-4 py-2 rounded-md ${
+          isLocating
             ? 'bg-gray-300 text-gray-600'
             : 'bg-blue-500 text-white hover:bg-blue-600'
-          } transition-colors`}
+        } transition-colors`}
       >
         {isLocating ? (
           <>
@@ -116,15 +113,13 @@ export default function LocationPicker({ onLocationChange, initialLocation }: Lo
         )}
       </button>
 
-      {/* Map Container */}
       <div className="border rounded-lg overflow-hidden h-96 bg-gray-50 relative">
         <SimpleMap
-          position={position}
-          onPositionChange={handlePositionChange}
+          position={formData.location ? [formData.location.latitude, formData.location.longitude] : [0, 0]}
+          onPositionChange={handleLocationChange}
         />
       </div>
 
-      {/* Coordinate Display */}
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -132,8 +127,8 @@ export default function LocationPicker({ onLocationChange, initialLocation }: Lo
           </label>
           <input
             type="number"
-            value={position[0].toFixed(6)}
-            onChange={(e) => handlePositionChange(Number(e.target.value), position[1])}
+            value={formData.location?.latitude?.toFixed(6) || ''}
+            onChange={(e) => handleLocationChange(Number(e.target.value), formData.location?.longitude || 0)}
             step="0.000001"
             min="-90"
             max="90"
@@ -146,26 +141,25 @@ export default function LocationPicker({ onLocationChange, initialLocation }: Lo
           </label>
           <input
             type="number"
-            value={position[1].toFixed(6)}
-            onChange={(e) => handlePositionChange(position[0], Number(e.target.value))}
+            value={formData.location?.longitude?.toFixed(6) || ''}
+            onChange={(e) => handleLocationChange(formData.location?.latitude || 0, Number(e.target.value))}
             step="0.000001"
             min="-180"
             max="180"
             className="w-full p-2 border rounded-md text-sm"
           />
         </div>
-        <div className='flex justify-end'>
-          <button
-            onClick={nextStep}
-            className="px-6 py-2 bg-200 text-white rounded-md hover:bg-pink-500"
-          >
-            Continue
-          </button>
-        </div>
-
       </div>
 
-      {/* Error Message */}
+      <div className="flex justify-end">
+        <button
+          onClick={nextStep}
+          className="px-6 py-2 bg-pink-500 text-white rounded-md hover:bg-pink-600"
+        >
+          Continue
+        </button>
+      </div>
+
       {error && (
         <div className="p-3 bg-red-50 text-red-700 rounded-md text-sm">
           <FaMapMarkerAlt className="inline mr-2" />
@@ -173,11 +167,10 @@ export default function LocationPicker({ onLocationChange, initialLocation }: Lo
         </div>
       )}
 
-      {/* Success Message */}
-      {!error && position && (
+      {!error && formData.location && (
         <div className="text-sm text-green-600">
           <FaMapMarkerAlt className="inline mr-2" />
-          Location set: {position[0].toFixed(4)}, {position[1].toFixed(4)}
+          Location set: {formData.location.latitude.toFixed(4)}, {formData.location.longitude.toFixed(4)}
         </div>
       )}
     </div>
