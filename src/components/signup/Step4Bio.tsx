@@ -45,9 +45,9 @@ const BioStep = () => {
         bio: formData.bio,
         gender: formData.gender,
         image_url: formData.imageURL,
-        interests: formData.interests
+        interests: formData.interests,
+        location: formData.location
       };
-  
       const response = await axios.post(
         `http://localhost:4000/v1/user/register`, 
         registerBody,
@@ -76,6 +76,7 @@ const BioStep = () => {
       console.error('Registration error:', error);
     } finally {
       setIsSubmitting(false);
+      
     }
   };
 

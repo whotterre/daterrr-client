@@ -35,7 +35,7 @@ const SignupContainer = () => {
       </div>
       
       <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-sm"> {/* Container for form */}
-      <ProgressIndicator/>
+      <ProgressIndicator/> 
         {step === 1 && <Step1Gender />}
         {step === 2 && <Step2PersonalInfo />}
         {step === 3 && <Step3Interests />}

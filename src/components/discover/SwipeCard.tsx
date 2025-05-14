@@ -112,21 +112,17 @@ export default function SwipeCard({
       {/* Profile image with loading state */}
       <div className="relative h-full w-full">
         <img 
-          src={profile.image_url || "/default-profile.jpg"} 
+          src={profile.image_url} 
           alt={profile.first_name} 
           className="h-full w-full object-cover"
           loading="lazy"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = "/default-profile.jpg";
-          }}
-        />
+          />
         
         {/* Gradient overlay */}
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent h-1/3 p-6">
           <div className="absolute bottom-6 left-6 right-6 text-white">
             <div className="flex items-center gap-2">
               <h2 className="text-2xl font-bold">{profile.first_name}, {profile.age}</h2>
-            
             </div>
             
             {profile.bio && (
@@ -157,14 +153,6 @@ export default function SwipeCard({
           >
             <FaTimes className="text-gray-600 text-lg" />
           </button>
-          
-          {/* <button 
-            onClick={onSuperLike}
-            className="bg-blue-500 w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600 transition-colors"
-            aria-label="Super Like"
-          >
-            <FiStar className="text-white text-lg" />
-          </button> */}
           
           <button 
             onClick={onLike}
@@ -202,6 +190,7 @@ export default function SwipeCard({
           </motion.div>
         )}
         
+
       </div>
     </motion.div>
   );

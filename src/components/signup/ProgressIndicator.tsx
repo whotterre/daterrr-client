@@ -15,7 +15,6 @@ export default function ProgressIndicator() {
     <div className="flex justify-center mb-8">
       {[1, 2, 3, 4, 5].map((stepNumber) => (
         <div key={stepNumber} className="flex items-center">
-          {/* Clickable step circle */}
           <button
             type="button"
             onClick={() => goToStep(stepNumber)}
