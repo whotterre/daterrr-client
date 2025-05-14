@@ -41,23 +41,25 @@ export default function Navbar() {
   }
   useEffect(() => {
     const fetchProfile = async () => {
-      const response = await axios.get("http://localhost:4000/v1/user/getprofile", {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
+      try {
+        const response = await axios.get("http://localhost:4000/v1/user/getprofile", {
+          headers: {
+            "Authorization": `Bearer ${accessToken}`
+          }
+        });
+        if (response.status === 200) {
+          setProfile(response.data.profile);
+          if (!localStorage.getItem("CurrentUserID")) {
+            localStorage.setItem("CurrentUserID", response.data.profile.id);
+          }
+          setLoading(false);
         }
-      })
-      if (response.status === 200) {
-        setProfile(response.data.profile);
+      } catch (error) {
+        console.error("Error fetching profile:", error);
         setLoading(false);
       }
     };
-
-    setLoading(true);
-    try {
-      fetchProfile();
-    } catch(e){
-      console.error(e);
-    }
+    fetchProfile()
   }, [accessToken]);
   return (
     <nav className="fixed top-0 w-full bg-white shadow-sm z-50">
@@ -83,7 +85,7 @@ export default function Navbar() {
             <div className="animate-pulse flex space-x-4">
               <div className="rounded-full bg-gray-200 h-8 w-8"></div>
             </div>
-          ) : profile ? (
+          ) : true ? (
             <>
               <button
                 className="p-2 text-gray-600 hover:text-pink-500 transition-colors"

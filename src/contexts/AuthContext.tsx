@@ -1,5 +1,19 @@
 'use client';
-import { createContext, ReactNode, useState, useContext } from "react";
+import { createContext, useState} from "react";
+
+export interface User {
+    id: string;
+    name: string;
+    email: string;
+    profilePicture?: string;
+    age?: number;
+    gender?: string;
+    bio?: string;
+    interests?: string[];
+    photos?: string[];
+    location?: string;
+  }
+  
 
 type LoginData = {
     email: string;
@@ -21,7 +35,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         email: "",
         password: ""
     });
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
     const updateFormData = <K extends keyof LoginData>(field: K, value: LoginData[K]) => {
         setAuthData(prev => ({ ...prev, [field]: value }));
