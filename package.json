@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@google/genai": "^1.4.0",
     "@next/env": "^15.3.0",
     "axios": "^1.8.4",
     "framer-motion": "^12.6.3",

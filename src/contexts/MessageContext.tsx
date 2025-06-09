@@ -39,7 +39,9 @@ interface MessageContextType {
     setCurrentConversation: Dispatch<SetStateAction<Conversation | null>>,
     messages: Message[];
     sendMessage: (recieverId: string, content: string) => void;
-    // fetchMessages: (conversationId: string) => Promise<void>;
+    messageText: string;
+    setMessageText: Dispatch<SetStateAction<string>>;
+    // fetchMessages: (conversationId: string) => Promise<void>; // Added fetchMessages method
     getConversationWithUser: (userId: string) => Conversation | undefined;
     startConversation: (user: User) => Conversation;
     sendTypingIndicator: (conversationId: string) => Promise<void>;
@@ -60,7 +62,7 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
     const [convos, setConvos] = useState<Conversation[]>([]);
     const [currentConversation, setCurrentConversation] = useState<Conversation | null>(null);
     const [messages, setMessages] = useState<Message[]>([]);
-
+    const [messageText, setMessageText] = useState<string>('')
     const accessToken = localStorage.getItem("DaterrAccessToken")!;
 
     useEffect(() => {
@@ -102,6 +104,8 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
                 currentConversation,
                 setCurrentConversation,
                 messages,
+                messageText,
+                setMessageText,
                 //fetchMessages,
                 sendMessage: (recieverId: string, content: string) => {
                     if (!content.trim()) return;

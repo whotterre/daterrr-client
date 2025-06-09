@@ -7,6 +7,7 @@ import { FaPaperPlane } from "react-icons/fa"
 import { MessageContext } from "../../../contexts/MessageContext"
 import { useRouter } from "next/navigation"
 import axios from "axios"
+import ConvoSuggestions from "@/components/messages/ConvoSuggestions"
 
 type Message = {
     id?: string
@@ -26,14 +27,14 @@ export default function Messages({ params }: { params: { messageId: string } }) 
     const [error, setError] = useState<string | null>(null)
     const [isTyping, setIsTyping] = useState<boolean>(false)
     const [typingUser, setTypingUser] = useState<string | null>(null)
-    const [messageText, setMessageText] = useState<string>('')
+    
 
     const scrollRef = useRef<HTMLDivElement>(null)
     const token = localStorage.getItem("DaterrAccessToken")
     const currentUserId = localStorage.getItem("CurrentUserID")
 
     const messageContext = useContext(MessageContext)!
-    const { currentConversation } = messageContext
+    const { messageText, setMessageText, currentConversation } = messageContext
     const socket = useRef<WebSocket | null>(null)
     const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -127,9 +128,10 @@ export default function Messages({ params }: { params: { messageId: string } }) 
         };
 
         fetchMessages()
-    }, [params.messageId,token])
+    }, [params.messageId, token])
 
     const formatTime = (timestamp: number | string) => {
+        console.log(timestamp)
         const date = new Date(typeof timestamp === 'string' ? parseInt(timestamp) * 1000 : timestamp * 1000) // Convert Unix timestamp to Date
         const hours = date.getHours()
         const minutes = date.getMinutes().toString().padStart(2, '0')
@@ -293,6 +295,8 @@ export default function Messages({ params }: { params: { messageId: string } }) 
                     )}
                 </div>
             </ScrollArea>
+            
+            <ConvoSuggestions />
 
             <div className="border-t bg-white fixed top-[88%] w-full">
                 <div className="flex gap-1 items-center p-2">
