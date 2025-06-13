@@ -5,8 +5,9 @@ import Navbar from "../components/Navbar";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { MessageProvider } from "@/contexts/MessageContext";
 
+
 const skModernist = localFont({
-  src: "./fonts/Sk-Modernist-Regular.otf",
+  src: "../public/Sk-Modernist-Regular.otf",
   variable: "--sk-modernist",
   weight: "100 200 300 400 500 600 700 800 900",
 });

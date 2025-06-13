@@ -4,8 +4,9 @@ import Step1Gender from './Step1Gender';
 import ProgressIndicator from './ProgressIndicator';
 import Step2PersonalInfo from './Step2PersonalInfo';
 import Step3Interests from './Step3Interests';
-import Step4Bio from './Step4Bio';
-import LocationPicker  from './LocationPicker';
+import Step4Bio from './Step6Bio';
+import LocationPicker  from './LocationPicker4';
+import Step5ProfilePic from './Step5ProfilePic';
 
 type Location = {
   latitude: number
@@ -40,7 +41,8 @@ const SignupContainer = () => {
         {step === 2 && <Step2PersonalInfo />}
         {step === 3 && <Step3Interests />}
         {step === 4 && <LocationPicker onLocationChange={handleLocation}/>}
-        {step === 5 && <Step4Bio/>}
+        {step === 5 && <Step5ProfilePic/>}
+        {step === 6 && <Step4Bio/>}
        
       </div>
     </div>

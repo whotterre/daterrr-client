@@ -13,7 +13,7 @@ export default function ProgressIndicator() {
 
   return (
     <div className="flex justify-center mb-8">
-      {[1, 2, 3, 4, 5].map((stepNumber) => (
+      {[1, 2, 3, 4, 5, 6].map((stepNumber) => (
         <div key={stepNumber} className="flex items-center">
           <button
             type="button"
@@ -27,8 +27,8 @@ export default function ProgressIndicator() {
           </button>
           
           {/* Connector line */}
-          {stepNumber < 5 && (
-            <div className={`w-12 h-1 mx-1 transition-colors
+          {stepNumber < 6 && (
+            <div className={`w-8 h-1 mx-1 transition-colors
               ${step > stepNumber ? 'bg-200' : 'bg-gray-200'}`}
             />
           )}

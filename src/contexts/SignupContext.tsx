@@ -15,7 +15,7 @@ type SignupData = {
   bio: string;
   gender: string;
   age: number;
-  imageURL: string;
+  imageFile: File | null;
   location: Location;
   interests: string[];
 };
@@ -49,7 +49,7 @@ export const SignupProvider: React.FC<SignupProviderProps> = ({ children }) => {
     bio: "",
     gender: "",
     age: 0,
-    imageURL: "https://i.pinimg.com/736x/3c/78/43/3c78430b748b3f5db1de15327ad16ce2.jpg",
+    imageFile: null,
     location: { longitude: 0, latitude: 0 },
     interests: [],
   });
