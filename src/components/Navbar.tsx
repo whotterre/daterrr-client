@@ -25,21 +25,23 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
 
-
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [loading, setLoading] = useState(true);
-  const accessToken = localStorage!.getItem("DaterrAccessToken")
+  const accessToken = typeof window !== "undefined" ? localStorage.getItem("DaterrAccessToken") : null;
+
   const handleLogout = () => {
     localStorage.removeItem("DaterrAccessToken");
     router.push("/login");
     router.refresh();
   };
 
-  if (pathname === '/login' || pathname === '/signup') {
-    return null;
-  }
   useEffect(() => {
+    if (!accessToken) {
+      setLoading(false);
+      setProfile(null);
+      return;
+    }
     const fetchProfile = async () => {
       try {
         const response = await axios.get("http://localhost:4000/v1/user/getprofile", {
@@ -52,15 +54,16 @@ export default function Navbar() {
           if (!localStorage.getItem("CurrentUserID")) {
             localStorage.setItem("CurrentUserID", response.data.profile.id);
           }
-          setLoading(false);
         }
       } catch (error) {
-        console.error("Error fetching profile:", error);
+        setProfile(null);
+      } finally {
         setLoading(false);
       }
     };
-    fetchProfile()
+    fetchProfile();
   }, [accessToken]);
+
   return (
     <nav className="fixed top-0 w-full bg-white shadow-sm z-50">
       <div className="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
@@ -85,7 +88,7 @@ export default function Navbar() {
             <div className="animate-pulse flex space-x-4">
               <div className="rounded-full bg-gray-200 h-8 w-8"></div>
             </div>
-          ) : true ? (
+          ) : accessToken && profile ? (
             <>
               <button
                 className="p-2 text-gray-600 hover:text-pink-500 transition-colors"
@@ -134,12 +137,23 @@ export default function Navbar() {
               </button>
             </>
           ) : (
-            <p>Loading...</p>
+            <>
+              <button
+                onClick={() => router.push('/login')}
+                className="text-sm text-gray-600 hover:text-pink-500 transition-colors"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => router.push('/signup')}
+                className="ml-2 text-sm bg-pink-500 text-white py-2 px-4 rounded-md hover:bg-pink-600 transition-colors"
+              >
+                Signup
+              </button>
+            </>
           )}
         </div>
       </div>
     </nav>
   );
 }
-
-// NavLink component remains the same

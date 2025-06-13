@@ -5,6 +5,7 @@ import { SwipeDirection } from '@/types';
 import axios from 'axios';
 import { AnimatePresence } from 'framer-motion';
 import { LoaderCircle } from 'lucide-react';
+import Preferences from './Preferences';
 
 export default function Discover() {
   const [profiles, setProfiles] = useState<any[]>([]);
@@ -43,7 +44,6 @@ export default function Discover() {
 
   const handleSwipe = async (dir: SwipeDirection) => {
     const authToken = localStorage.getItem("DaterrAccessToken")
-    console.log(authToken)
     try {
       setIsLoading(true)
       const response = await axios.post("http://localhost:4000/v1/swipes", {
@@ -54,9 +54,6 @@ export default function Discover() {
         }
       });
 
-      if (response.data){
-        console.log(response.data)
-      }
     } catch(error: any){
         console.error("Error swiping on a user", error)
         setError("Failed to perform swipe due to a technical glitch")
@@ -76,8 +73,8 @@ export default function Discover() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center h-full text-center p-8">
-        <LoaderCircle className="animate-spin w-full h-full"/>
+      <div className="flex w-full flex-col items-center justify-center h-full text-center p-8">
+        <LoaderCircle className="animate-spin w-1/5 h-1/5"/>
         <h2>Loading profiles...</h2>
       </div>
     );
@@ -85,7 +82,7 @@ export default function Discover() {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center h-full text-center p-8">
+      <div className="flex w-full flex-col items-center justify-center h-full text-center p-8">
         <h2 className="text-2xl font-bold mb-2">Error</h2>
         <p className="text-gray-600">{error}</p>
       </div>
@@ -102,10 +99,14 @@ export default function Discover() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] w-full max-w-md p-10 mx-auto">
-      {/* Card Stack Container */}
-      <div className="relative w-full h-[500px] mb-8">
+    <div className="flex flex-col lg:flex-row items-center lg:items-start justify-center gap-6 w-full max-w-6xl p-4 mx-auto min-h-[80vh]">
+      {/* Preferences Panel - shows first on mobile, left on desktop */}
+      <div className="w-full lg:w-1/4 lg:pr-4 order-1 lg:order-none">
+        <Preferences />
+      </div>
 
+      {/* Card Stack Container - shows second on mobile, right on desktop */}
+      <div className="relative w-full max-w-md h-[500px] order-2 lg:order-none">
         {/* Third card (backmost) */}
         {thirdProfile && (
           <div className="absolute top-0 w-full h-full">
@@ -134,8 +135,6 @@ export default function Discover() {
           )}
         </AnimatePresence>
       </div>
-
-      
     </div>
   );
 }
