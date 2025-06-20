@@ -52,6 +52,8 @@ const PersonalInfoStep = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
+      // Add email to sessionStorage 
+      localStorage.setItem("pendingEmail", formData.email)
       nextStep();
     }
   };

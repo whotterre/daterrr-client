@@ -1,9 +1,10 @@
 import { useContext, useState } from 'react';
 import { SignupContext } from '../../contexts/SignupContext';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const BioStep = () => {
-  const { formData, updateFormData, prevStep } = useContext(SignupContext)!;
+  const { formData, updateFormData, prevStep, nextStep } = useContext(SignupContext)!;
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -63,8 +64,9 @@ const BioStep = () => {
         });
 
       // TODO: Add toast notif for UI feedback
-      console.log("User signed up successfully", response.data)
-
+      toast("User signed up successfully", response.data)
+      localStorage.setItem('pendingEmail', formData.email);
+      nextStep()
     } catch (error) {
       let errorMessage = 'Registration failed';
 

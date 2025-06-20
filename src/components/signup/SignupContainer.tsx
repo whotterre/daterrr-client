@@ -7,6 +7,7 @@ import Step3Interests from './Step3Interests';
 import Step4Bio from './Step6Bio';
 import LocationPicker  from './LocationPicker4';
 import Step5ProfilePic from './Step5ProfilePic';
+import VerifyOTP from './VerifyOTP';
 
 type Location = {
   latitude: number
@@ -32,7 +33,7 @@ const SignupContainer = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center p-4">
       <div className="w-full max-w-md py-4">
-        <ProgressIndicator />
+        {step < 7 ? <ProgressIndicator /> : ""}
       </div>
       
       <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-sm"> {/* Container for form */}
@@ -43,6 +44,7 @@ const SignupContainer = () => {
         {step === 4 && <LocationPicker onLocationChange={handleLocation}/>}
         {step === 5 && <Step5ProfilePic/>}
         {step === 6 && <Step4Bio/>}
+        {step === 7 && <VerifyOTP/>}
        
       </div>
     </div>
