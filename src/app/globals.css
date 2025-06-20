@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: "Sk-Modernist";
-  src: url("./fonts/Sk-Modernist-Regular.otf");
+  src: url("../public/Sk-Modernist-Regular.otf");
 }
 
 :root {
@@ -12,13 +12,20 @@
   --foreground: #171717;
 }
 
+.message-bubble-in {
+  border-radius: 0 15px 15px 15px !important;
+  margin-left: 0.5rem;
+}
+
+.message-bubble-out {
+  border-radius: 15px 0 15px 15px !important;
+  margin-left: auto;
+  margin-right: 0;
+}
 @media (prefers-color-scheme: dark) {
   
 }
 
-body {
-  font-family: "Sk-Modernist";
-}
 
 @layer utilities {
   .text-balance {

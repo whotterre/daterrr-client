@@ -8,7 +8,7 @@ export const metadata = {
 const GenderStep = () => {
   const { formData, updateFormData, nextStep } = useContext(SignupContext)!;
 
-  const genders = ['Male', 'Female', 'Non-binary', 'Prefer not to say'];
+  const genders: Array<string> = ['Male', 'Female', 'Non-binary', 'Prefer not to say'];
 
   const handleGenderSelect = (gender: string) => {
     updateFormData('gender', gender);
@@ -16,7 +16,7 @@ const GenderStep = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+    <div className="max-w-md mx-auto p-6 bg-white rounded-lg">
       <h2 className="text-2xl font-bold mb-6 text-center">What's your gender?</h2>
       <div className="space-y-4">
         {genders.map((gender) => (
