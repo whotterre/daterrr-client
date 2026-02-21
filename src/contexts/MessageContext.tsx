@@ -63,10 +63,17 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
     const [currentConversation, setCurrentConversation] = useState<Conversation | null>(null);
     const [messages, setMessages] = useState<Message[]>([]);
     const [messageText, setMessageText] = useState<string>('')
-    const accessToken = localStorage.getItem("DaterrAccessToken")!;
+    const [accessToken, setAccessToken] = useState<string | null>(null);
 
     useEffect(() => {
-        // if (!isAuthenticated) return; // Ensure the user is authenticated
+        if (typeof window !== 'undefined') {
+            const token = localStorage.getItem("DaterrAccessToken");
+            setAccessToken(token);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!accessToken) return;
 
         const fetchConversations = async () => {
             try {
@@ -113,7 +120,7 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
                     const newMessage: Message = {
                         id: Date.now().toString(),
                         chatId: "", // Assign the appropriate chatId here
-                        senderId: accessToken[1],
+                        senderId: accessToken ? accessToken[1] : 'unknown',
                         content,
                         createdAt: new Date(),
                         readAt: undefined, 

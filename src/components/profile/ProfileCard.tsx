@@ -45,6 +45,32 @@ export default function Profile() {
         }
         fetchProfile()
     }, []);
+        useEffect(() => {
+            if (typeof window !== 'undefined') {
+                const accessToken = localStorage.getItem("DaterrAccessToken");
+                if (!accessToken) {
+                    setError("Access token is missing. Please log in again.");
+                    return;
+                }
+
+                const fetchProfile = async () => {
+                    try {
+                        const response = await axios.get("http://localhost:4000/v1/user/getprofile", {
+                            headers: {
+                                Authorization: `Bearer ${accessToken}`
+                            }
+                        })
+                        if (response.status === 200) {
+                            setProfile(response.data)
+                            console.log(response.data)
+                        }
+                    } catch (error) {
+                        setError("Failed to fetch profile.");
+                    }
+                };
+                fetchProfile();
+            }
+        }, []);
 
 
     return (

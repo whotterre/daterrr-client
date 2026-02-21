@@ -30,8 +30,15 @@ export default function Messages({ params }: { params: { messageId: string } }) 
     
 
     const scrollRef = useRef<HTMLDivElement>(null)
-    const token = localStorage.getItem("DaterrAccessToken")
-    const currentUserId = localStorage.getItem("CurrentUserID")
+    const [token, setToken] = useState<string | null>(null)
+    const [currentUserId, setCurrentUserId] = useState<string | null>(null)
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            setToken(localStorage.getItem("DaterrAccessToken"));
+            setCurrentUserId(localStorage.getItem("CurrentUserID"));
+        }
+    }, []);
 
     const messageContext = useContext(MessageContext)!
     const { messageText, setMessageText, currentConversation } = messageContext
